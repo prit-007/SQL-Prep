@@ -108,19 +108,6 @@ INSERT INTO Orders (CustomerID, ProductID, OrderDate, Quantity, Price, TotalOrde
 | :--------- | :----------- | :--------- |
 | 8          | Harish Reddy | 2024-06-01 |
 
-**Answer Query (Option 1: `LEFT JOIN`):**
-
-```sql
-SELECT
-    C.CustomerID,
-    C.Name,
-    C.JoinDate
-FROM Customers C
-LEFT JOIN Orders O ON C.CustomerID = O.CustomerID
-WHERE O.OrderID IS NULL;
-```
-
----
 
 #### **Question 2:** List products ordered by more than 5 different customers.
 
@@ -253,6 +240,7 @@ Arun and Bhavna both joined on '2023-01-10'.
 | ProductName | Price   |
 | :---------- | :------ |
 | Laptop      | 1200.00 |
+
 
 
 
