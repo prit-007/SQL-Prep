@@ -1,0 +1,266 @@
+﻿@model List<RealEstate_Admin.Models.AgentModel>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Agent Management</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item active">Agents</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="section">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body py-3">
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                            <div class="search-box position-relative">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search agents by name or license..." style="padding-left: 40px; width: 300px;" />
+                                <i class="bi bi-search position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                            </div>
+                            <a asp-controller="Agent" asp-action="AddAgent" class="btn btn-primary d-flex align-items-center gap-2">
+                                <i class="bi bi-person-plus"></i> Add Agent
+                            </a>
+                        </div>
+
+                        <!-- Filter Pills -->
+                        <div class="d-flex gap-2 mb-4 flex-wrap">
+                            <button class="btn btn-sm btn-outline-secondary filter-btn active" data-filter="all">All</button>
+                            <button class="btn btn-sm btn-outline-success filter-btn" data-filter="Active">Active</button>
+                            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="Inactive">Inactive</button>
+                            <button class="btn btn-sm btn-outline-warning filter-btn" data-filter="Suspended">Suspended</button>
+                        </div>
+
+                        <!-- Success/Error Messages -->
+                        @if (TempData["ConfirmationMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle"></i> @TempData["ConfirmationMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-circle"></i> @TempData["ErrorMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <!-- Agents Grid -->
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="agentGrid">
+                                @foreach (var agent in Model)
+                                {
+                                    <div class="col agent-card" data-name="@agent.AgentName.ToLower()" data-status="@agent.Status">
+                                        <div class="card h-100 shadow-sm agent-card-item border-0">
+                                            <div class="card-body text-center p-4">
+                                                <!-- Avatar/Profile Image -->
+                                                <div class="mb-3">
+                                                    @if (!string.IsNullOrEmpty(agent.ProfilePicturePath))
+                                                    {
+                                                        <img src="@agent.ProfilePicturePath" alt="@agent.AgentName" 
+                                                             class="rounded-circle object-fit-cover" 
+                                                             style="width: 80px; height: 80px;" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" 
+                                                             style="width: 80px; height: 80px; font-size: 2rem;">
+                                                            @agent.AgentName.Substring(0, 1).ToUpper()
+                                                        </div>
+                                                    }
+                                                </div>
+
+                                                <!-- Agent Name -->
+                                                <h5 class="card-title mb-1">@agent.AgentName</h5>
+                                                
+                                                <!-- Status Badge -->
+                                                <span class="badge bg-@GetAgentStatusBadge(agent.Status) mb-3">
+                                                    @agent.Status
+                                                </span>
+
+                                                <!-- Details -->
+                                                <div class="text-start text-muted small">
+                                                    <p class="mb-2"><i class="bi bi-person-badge me-2"></i>@agent.LicenseNumber</p>
+                                                    <p class="mb-2"><i class="bi bi-telephone me-2"></i>@agent.ContactNumber</p>
+                                                    <p class="mb-2"><i class="bi bi-briefcase me-2"></i>@agent.ExperienceYears years exp.</p>
+                                                    <p class="mb-1 text-truncate" title="@agent.OfficeAddress">
+                                                        <i class="bi bi-geo-alt me-2"></i>@agent.OfficeAddress
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Card Footer -->
+                                            <div class="card-footer bg-white border-top d-flex justify-content-center gap-2 py-3">
+                                                <a asp-controller="Agent" asp-action="AddAgent" asp-route-AgentId="@agent.AgentId" 
+                                                   class="btn btn-sm btn-success">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                                <form method="post" asp-controller="Agent" asp-action="DeleteAgent" onsubmit="return confirmDelete('@agent.AgentName');">
+                                                    <input type="hidden" name="AgentId" value="@agent.AgentId" />
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <i class="bi bi-people" style="font-size: 4rem; color: #ccc;"></i>
+                                <h4 class="mt-3 text-muted">No Agents Found</h4>
+                                <p class="text-muted">Add your first agent to get started.</p>
+                                <a asp-controller="Agent" asp-action="AddAgent" class="btn btn-primary">
+                                    <i class="bi bi-person-plus"></i> Add Agent
+                                </a>
+                            </div>
+                        }
+
+                        <!-- No Results -->
+                        <div id="noResults" class="text-center py-5" style="display: none;">
+                            <i class="bi bi-search" style="font-size: 4rem; color: #ccc;"></i>
+                            <h4 class="mt-3 text-muted">No Matching Agents</h4>
+                            <button id="clearFilters" class="btn btn-secondary">Clear Filters</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete agent <strong id="agentToDelete"></strong>?</p>
+                <p class="text-muted">This will also remove their properties.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetAgentStatusBadge(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "active" => "success",
+            "inactive" => "secondary",
+            "suspended" => "warning",
+            _ => "secondary"
+        };
+    }
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Search
+    $('#searchInput').on('keyup', function() {
+        const searchTerm = $(this).val().toLowerCase();
+        
+        $('.agent-card').each(function() {
+            const name = $(this).data('name');
+            
+            if (name.includes(searchTerm)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+        
+        toggleNoResults();
+    });
+
+    // Filter
+    $('.filter-btn').on('click', function() {
+        const filter = $(this).data('filter');
+        
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        
+        $('.agent-card').each(function() {
+            const status = $(this).data('status');
+            
+            if (filter === 'all' || status === filter) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+        
+        toggleNoResults();
+    });
+
+    // Clear Filters
+    $('#clearFilters').on('click', function() {
+        $('#searchInput').val('');
+        $('.filter-btn').removeClass('active');
+        $('.filter-btn[data-filter="all"]').addClass('active');
+        $('.agent-card').show();
+        toggleNoResults();
+    });
+
+    function toggleNoResults() {
+        const visibleCards = $('.agent-card:visible').length;
+        if (visibleCards === 0) {
+            $('#agentGrid').hide();
+            $('#noResults').show();
+        } else {
+            $('#agentGrid').show();
+            $('#noResults').hide();
+        }
+    }
+
+    function confirmDelete(agentName) {
+        $('#agentToDelete').text(agentName);
+        $('#deleteModal').modal('show');
+        return false;
+    }
+
+    // Auto-hide alerts
+    setTimeout(function() {
+        $('.alert').fadeOut();
+    }, 3000);
+</script>
+
+<style>
+    .agent-card-item {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .agent-card-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+    
+    .filter-btn.active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+
+    .object-fit-cover {
+        object-fit: cover;
+    }
+</style>
