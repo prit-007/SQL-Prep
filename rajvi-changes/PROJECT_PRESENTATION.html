@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Dwellings - Real Estate Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #0d6efd;
+            --secondary: #6c757d;
+            --success: #198754;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d6efd 100%);
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .api-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .db-schema {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .table-box {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .users-table { background: #e3f2fd; color: #1565c0; }
+        .properties-table { background: #e8f5e9; color: #2e7d32; }
+        .images-table { background: #fff3e0; color: #e65100; }
+        .agents-table { background: #f3e5f5; color: #7b1fa2; }
+        .appointments-table { background: #e0f7fa; color: #00838f; }
+        .feedback-table { background: #fce4ec; color: #c2185b; }
+        
+        .endpoint-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .get-badge { background: #28a745; color: white; }
+        .post-badge { background: #ffc107; color: #333; }
+        .put-badge { background: #17a2b8; color: white; }
+        .delete-badge { background: #dc3545; color: white; }
+        
+        .architecture-diagram {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .nav-pills .nav-link {
+            color: var(--secondary);
+        }
+        
+        .nav-pills .nav-link.active {
+            background: var(--primary);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.5rem;
+        }
+        
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #d63384;
+        }
+        
+        .console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+        
+        footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 30px 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">
+            <i class="bi bi-house-door me-2"></i>Dream Dwellings
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#overview">Overview</a></li>
+                <li class="nav-item"><a class="nav-link" href="#architecture">Architecture</a></li>
+                <li class="nav-item"><a class="nav-link" href="#api">API</a></li>
+                <li class="nav-item"><a class="nav-link" href="#database">Database</a></li>
+                <li class="nav-item"><a class="nav-link" href="#screenshots">Screens</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-3 fw-bold mb-4">Dream Dwellings</h1>
+                <h3 class="mb-4">Real Estate Management System</h3>
+                <p class="lead mb-4">A full-stack solution for property management with Admin dashboard, Customer frontend, and REST API.</p>
+                <div class="d-flex gap-3">
+                    <a href="#architecture" class="btn btn-light btn-lg">
+                        <i class="bi bi-diagram-3 me-2"></i>Architecture
+                    </a>
+                    <a href="#api" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-code-slash me-2"></i>API Docs
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="bi bi-building" style="font-size: 10rem; opacity: 0.8;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Overview Section -->
+<section id="overview" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="bi bi-grid me-2 text-primary"></i>Project Overview
+        </h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card section-card h-100 text-center p-4">
+                    <div class="feature-icon bg-primary text-white mx-auto mb-3">
+                        <i class="bi bi-person-shield"></i>
+                    </div>
+                    <h4>Admin Panel</h4>
+                    <p class="text-muted">Full dashboard for managing properties, agents, appointments, and users with stats visualization.</p>
+                    <span class="badge bg-primary">Port 5021</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card section-card h-100 text-center p-4">
+                    <div class="feature-icon bg-success text-white mx-auto mb-3">
+                        <i class="bi bi-house"></i>
+                    </div>
+                    <h4>Customer Frontend</h4>
+                    <p class="text-muted">Beautiful responsive website for customers to browse properties, search, and contact agents.</p>
+                    <span class="badge bg-success">Port 5133</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card section-card h-100 text-center p-4">
+                    <div class="feature-icon bg-warning text-dark mx-auto mb-3">
+                        <i class="bi bi-hdd-network"></i>
+                    </div>
+                    <h4>REST API</h4>
+                    <p class="text-muted">Secure endpoints for all operations with Swagger documentation.</p>
+                    <span class="badge bg-warning text-dark">Port 5250</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3"><i class="bi bi-person-circle me-2"></i>Who Can Access What</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>User Role</th>
+                                        <th>Access</th>
+                                        <th>Capabilities</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-danger">Admin</span></td>
+                                        <td>Admin Panel + Frontend</td>
+                                        <td>Full CRUD, Dashboard Stats, Manage Agents</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-success">Buyer</span></td>
+                                        <td>Frontend Only</td>
+                                        <td>Browse Properties, Book Appointments</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary">Seller</span></td>
+                                        <td>Frontend Only</td>
+                                        <td>List Properties, Manage Own Listings</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-secondary">User</span></td>
+                                        <td>Frontend Only</td>
+                                        <td>Browse, Contact, Feedback</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Architecture Section -->
+<section id="architecture" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="bi bi-diagram-3 me-2 text-primary"></i>System Architecture
+        </h2>
+        
+        <div class="architecture-diagram text-center mb-5">
+            <div class="row align-items-center">
+                <div class="col-12 mb-4">
+                    <span class="badge bg-dark p-3 fs-6">Browser / Client</span>
+                </div>
+                
+                <div class="col-4">
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-primary text-white">Frontend (MVC)</div>
+                        <div class="card-body">
+                            <i class="bi bi-house display-4 text-primary"></i>
+                            <p class="mb-0">Customer Website</p>
+                            <small class="text-muted">Port 5133</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-4">
+                    <div class="card border-success mb-3">
+                        <div class="card-header bg-success text-white">Admin (MVC)</div>
+                        <div class="card-body">
+                            <i class="bi bi-speedometer2 display-4 text-success"></i>
+                            <p class="mb-0">Dashboard</p>
+                            <small class="text-muted">Port 5021</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-4">
+                    <div class="card border-warning mb-3">
+                        <div class="card-header bg-warning text-dark">API (Web API)</div>
+                        <div class="card-body">
+                            <i class="bi bi-code-square display-4 text-warning"></i>
+                            <p class="mb-0">REST Services</p>
+                            <small class="text-muted">Port 5250</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 mt-3">
+                    <i class="bi bi-arrow-down display-4 text-muted"></i>
+                </div>
+                
+                <div class="col-6 mx-auto mt-3">
+                    <div class="card border-info">
+                        <div class="card-header bg-info text-white">SQL Server</div>
+                        <div class="card-body">
+                            <i class="bi bi-database display-4 text-info"></i>
+                            <p class="mb-0">PRIT-LEGION\SQLEXPRESS</p>
+                            <small class="text-muted">Database: RealEstate</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-check-circle me-2"></i>Key Features</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><i class="bi bi-person-check me-2 text-success"></i>User Authentication & Roles</li>
+                        <li class="list-group-item"><i class="bi bi-images me-2 text-warning"></i>Multiple Image Upload per Property</li>
+                        <li class="list-group-item"><i class="bi bi-search me-2 text-primary"></i>Search & Filter Properties</li>
+                        <li class="list-group-item"><i class="bi bi-calendar-check me-2 text-info"></i>Appointment Booking System</li>
+                        <li class="list-group-item"><i class="bi bi-envelope me-2 text-secondary"></i>Email Notifications via Hangfire</li>
+                        <li class="list-group-item"><i class="bi bi-bar-chart me-2 text-success"></i>Dashboard with Statistics</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-stack me-2"></i>Tech Stack</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Backend:</strong> ASP.NET Core 8.0</li>
+                        <li class="list-group-item"><strong>Frontend:</strong> ASP.NET Core MVC + Bootstrap 5</li>
+                        <li class="list-group-item"><strong>Database:</strong> SQL Server 2022</li>
+                        <li class="list-group-item"><strong>Session:</strong> In-Memory Cache</li>
+                        <li class="list-group-item"><strong>Background Jobs:</strong> Hangfire</li>
+                        <li class="list-group-item"><strong>API Docs:</strong> Swagger</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- API Endpoints Section -->
+<section id="api" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="bi bi-code-slash me-2 text-primary"></i>API Endpoints
+        </h2>
+        
+        <!-- Property Endpoints -->
+        <div class="api-card text-white p-4 mb-4 rounded-3">
+            <h4><i class="bi bi-building me-2"></i>Property Endpoints</h4>
+            <div class="mt-3">
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/Property</code> - Get all properties<br>
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/Property/{id}</code> - Get property by ID<br>
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/Property/category/{category}</code> - Filter by category<br>
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/Property/propertytype/{type}</code> - Filter by type<br>
+                <span class="endpoint-badge post-badge">POST</span>
+                <code>/api/Property</code> - Create new property<br>
+                <span class="endpoint-badge delete-badge">DELETE</span>
+                <code>/api/Property/{id}</code> - Delete property
+            </div>
+        </div>
+        
+        <!-- User Endpoints -->
+        <div class="api-card text-white p-4 mb-4 rounded-3">
+            <h4><i class="bi bi-person me-2"></i>User Endpoints</h4>
+            <div class="mt-3">
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/User</code> - Get all users<br>
+                <span class="endpoint-badge post-badge">POST</span>
+                <code>/api/User/login</code> - User authentication
+            </div>
+        </div>
+        
+        <!-- Agent Endpoints -->
+        <div class="api-card text-white p-4 mb-4 rounded-3">
+            <h4><i class="bi bi-people me-2"></i>Agent Endpoints</h4>
+            <div class="mt-3">
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/Agent</code> - Get all agents<br>
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/Agent/{id}</code> - Get agent by ID<br>
+                <span class="endpoint-badge post-badge">POST</span>
+                <code>/api/Agent</code> - Create new agent<br>
+                <span class="endpoint-badge put-badge">PUT</span>
+                <code>/api/Agent/{id}</code> - Update agent<br>
+                <span class="endpoint-badge delete-badge">DELETE</span>
+                <code>/api/Agent/{id}</code> - Delete agent
+            </div>
+        </div>
+        
+        <!-- Appointment Endpoints -->
+        <div class="api-card text-white p-4 rounded-3">
+            <h4><i class="bi bi-calendar-event me-2"></i>Appointment Endpoints</h4>
+            <div class="mt-3">
+                <span class="endpoint-badge get-badge">GET</span>
+                <code>/api/Appointment</code> - Get all appointments<br>
+                <span class="endpoint-badge post-badge">POST</span>
+                <code>/api/Appointment</code> - Book appointment<br>
+                <span class="endpoint-badge put-badge">PUT</span>
+                <code>/api/Appointment/status/{id}</code> - Update status
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Database Schema Section -->
+<section id="database" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="bi bi-database me-2 text-primary"></i>Database Schema
+        </h2>
+        
+        <div class="db-schema">
+            <p class="text-center mb-4">Core Tables & Relationships</p>
+            
+            <div class="text-center mb-4">
+                <span class="table-box users-table">Users</span>
+                <i class="bi bi-arrow-right text-muted mx-2"></i>
+                <span class="table-box properties-table">Properties</span>
+                <i class="bi bi-arrow-right text-muted mx-2"></i>
+                <span class="table-box images-table">PropertyImages</span>
+            </div>
+            
+            <div class="text-center mb-4">
+                <span class="table-box agents-table">Agents</span>
+                <span class="table-box appointments-table">Appointments</span>
+                <span class="table-box feedback-table">Feedback</span>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">Properties Table Fields</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">PropertyId (PK)</li>
+                        <li class="list-group-item">Title, Description</li>
+                        <li class="list-group-item">PropertyTypeId (FK)</li>
+                        <li class="list-group-item">Category (Buy/Rent/Sell)</li>
+                        <li class="list-group-item">Price, Location, Area</li>
+                        <li class="list-group-item">Bedrooms, Bathrooms, Amenities</li>
+                        <li class="list-group-item">Status (Available/Sold/Pending)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">PropertyImages Table Fields</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">ImageId (PK)</li>
+                        <li class="list-group-item">PropertyId (FK)</li>
+                        <li class="list-group-item">ImageName, ImagePath</li>
+                        <li class="list-group-item">IsPrimary (Boolean)</li>
+                        <li class="list-group-item">DisplayOrder (Int)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Login Credentials Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0"><i class="bi bi-key me-2"></i>Login Credentials
+                    </h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Application</th>
+                                <th>URL</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Admin</strong></td>
+                                <td><code>localhost:5021</code></td>
+                                <td>admin@dreamdwellings.com</td>
+                                <td><code>admin123</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Frontend</strong></td>
+                                <td><code>localhost:5133</code></td>
+                                <td>(Same)</td>
+                                <td>(Same)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How to Run Section -->
+<section class="py-5 bg-dark text-white">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="bi bi-play-circle me-2"></i>How to Run
+        </h2>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="text-center mb-3">
+                    <div class="feature-icon bg-primary text-white mx-auto mb-3">1</div>
+                    <h5>Create Database</h5>
+                    <code class="d-block mt-2">sqlcmd -S PRIT-LEGION -E -i RealEstateDB_Clean.sql</code>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center mb-3">
+                    <div class="feature-icon bg-success text-white mx-auto mb-3">2</div>
+                    <h5>Start API</h5>
+                    <code class="d-block mt-2">dotnet run --project RealEstate_Api</code>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center mb-3">
+                    <div class="feature-icon bg-warning text-dark mx-auto mb-3">3</div>
+                    <h5>Start Apps</h5>
+                    <code class="d-block mt-2">dotnet run --project RealEstate_Admin<br>dotnet run --project RealEstate_Frontend</code>
+                </div>
+            </div>
+        </div>
+        
+        <div class="console-output mt-5">
+            <div class="text-warning"># Sample Console Output</div>
+            <div>info: Microsoft.Hosting.Lifetime[14]</div>
+            <div>      Now listening on: http://localhost:5250</div>
+            <div>info: Microsoft.Hosting.Lifetime[0]</div>
+            <div>      Application started. Press Ctrl+C to shut down.</div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="text-center">
+    <div class="container">
+        <h3>Dream Dwellings Real Estate</h3>
+        <p class="mb-0">A full-stack property management system</p>
+        <div class="mt-3">
+            <span class="badge bg-primary me-2">ASP.NET Core 8.0</span>
+            <span class="badge bg-success me-2">SQL Server</span>
+            <span class="badge bg-warning text-dark">Bootstrap 5</span>
+            <span class="badge bg-info">REST API</span>
+        </div>
+        <div class="mt-3 text-muted">
+            <small>📄 Documentation: README.md | 📝 Changes: CHANGES_LOG.md | 🗄️ SQL: RealEstateDB_Clean.sql</small>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
